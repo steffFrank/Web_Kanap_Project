@@ -3,8 +3,6 @@
 
 
 // Helper functions
-
-
 const fetchData = async url => {
     try {
         const response = await fetch(url);
@@ -16,20 +14,28 @@ const fetchData = async url => {
         console.log(error);
     }
 }
-fetchData("http://localhost:3000/api/products");
+const url = "http://localhost:3000/api/products"
+fetchData(url);
 // Create a function to load the page
 
 
-// Create a function to create a card
-
+/**
+ * Create a card element
+ * @param { Object } card 
+ * @returns { HTMLElement }
+ */
 const createCard = card => {
     const link = document.createElement("a");
-    link.setAttribute("href", "#");
+    // Create the url of the product page by using the actual url
+    const productURL = window.location.href + "product.html";
+    const url = new URL("product.html", window.location.href);
+    url.searchParams.set("id", card._id);
+    link.setAttribute("href", url);
     link.innerHTML = `<article>
                         <img src="${card.imageUrl}" alt=${card.altTxt} />
                         <h3 class="productName">${card.name}</h3>
                             <p class="productDescription">${card.description}</p>
-                        </article>`;
+                      </article>`;
     return link;
                 
 }
