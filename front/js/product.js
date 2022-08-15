@@ -1,5 +1,5 @@
 // Functions to display the details of the product page
-import { fetchData, insertElement } from "./helper_functions.js";
+import { fetchData, insertElement, createMessage } from "./helper_functions.js";
 // Get the product id 
 const productURL = new URL(window.location.href);
 const id = productURL.searchParams.get("id");
@@ -51,7 +51,7 @@ const insertOptions = (parent, list) => {
 
 // Save data in local storage
 // const cart = [[id1, color1, qty], [id1, color2, qty], [id1, color3, qty], ...[id1000, color1000, qty]];
-
+// const cart = [{id: id1, color: color1, qty: qty}, {id: id1, color: color2, qty: qty}, {id: id1, color: color3, qty: qty}]
 // const cart = {
 //     id1: {
 //         color1: qty1,
@@ -66,26 +66,28 @@ const insertOptions = (parent, list) => {
 // }
 // localStorage.setItem("savedProducts", JSON.stringify(data));
 
-// const cartButton = document.getElementById("addToCart");
-// cartButton.addEventListener("click", () => {
-//     if (qty.value <= 0) {
-//         showMessage("Please insert a number between 1 and 100", qty)
-//     }
-//     if (colors.value == "") {
-//         showMessage("Please select a color", colors);
-//     }
-// })
+const cartButton = document.getElementById("addToCart");
+cartButton.addEventListener("click", () => {
+    if (qty.value <= 0) {
+        showMessage("Insérez un numero entre 1 et 100!", qty)
+    }
+    if (colors.value == "") {
+        showMessage("Sélectionnez une couleur!", colors);
+    }
+    setTimeout(() => {
+        removeMessage();
+    }, 2000);
+})
 
-// const showMessage = (message, sibbling) => {
-//     const div = document.createElement("div");
-//     div.className = "message";
-//     div.innerHTML = `<p>${message}</p>`;
-//     div.style.color = "#911818";
-//     div.style.fontSize = "12px";
-//     div.style.margin = "5px";
-//     div.style.width = "fit-content";
-//     div.style.padding = "0 10px";
-//     div.style.textAlign = "center";
-//     const parent = sibbling.parentElement;
-//     parent.appendChild(div);
-// }
+
+const showMessage = (message, sibbling) => {
+    const parent = sibbling.parentElement;
+    parent.appendChild(createMessage(message));
+}
+
+const removeMessage = () => {
+    const msg = document.querySelectorAll(".message");
+    for (let m of msg) {
+        m.remove();
+    }
+}

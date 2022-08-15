@@ -1,7 +1,7 @@
 // Helper functions
 
 /**
- * Fetch the data from the API
+ * Fetchs the data from the API
  * @param { String } url 
  * @returns Promise
  */
@@ -16,7 +16,7 @@ export const fetchData = async url => {
 }
 
 /**
- * Display the data fetched from url
+ * Displays the data fetched from url
  * @param { String } url 
  */
 export const displayData = async url => {
@@ -27,7 +27,7 @@ export const displayData = async url => {
 }
 
 /**
-* Create a card element
+* Creates a card element
 * @param { Object } card 
 * @returns { HTMLElement }
 */
@@ -47,11 +47,29 @@ export const createCard = card => {
 
 // Create a function to insert a card
 /**
- * Append an element in the parent element
+ * Appends an element in the parent element
  * @param { HTMLElement } child
  * @param { String } parent class or id
  */
 export const insertElement = (child, parent) => {
     const parentElement = document.querySelector(parent);
     parentElement.appendChild(child);
+}
+
+/**
+ * Creates a paragraph message
+ * @param { String } message 
+ * @returns HTMLElement
+ */
+export const createMessage = message => {
+    const par = document.createElement("p");
+    par.className = "message";
+    par.innerText = `${message}`;
+    par.style.color = "#ce3333";
+    par.style.fontSize = "12px";
+    par.style.margin = "5px auto";
+    par.style.width = "fit-content";
+    par.style.padding = "0 10px";
+    par.style.textAlign = "center";
+    return par;
 }
