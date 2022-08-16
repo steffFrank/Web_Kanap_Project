@@ -57,16 +57,16 @@ const insertOptions = (parent, list) => {
 cartButton.addEventListener("click", () => {
     // const product = {};
     // Display an error message if the quantity is not between 0 and 100
+    const textColor = "#ef4545";
     if (qty.value <= 0 || qty.value > 100 || colors.value == "") {
         if (qty.value <= 0 || qty.value > 100) {
-            showMessage("Insérez un numero entre 1 et 100!", qty);
+            showMessage("Insérez un numero entre 1 et 100!",textColor, qty);
             qty.value = 1;
         }
         if (colors.value == "") {
-            showMessage("Sélectionnez une couleur!", colors);
+            showMessage("Sélectionnez une couleur!", textColor, colors);
         }
     } else {
-        // product[id] = {[colors.value]: Number(qty.value)};
         addToCart(id);
     }
     removeElement(".message");
@@ -85,15 +85,18 @@ const addToCart = id => {
             // We increase the quantity if the id and colors are matching
             if (Object.keys(element[id]).includes(colors.value)) {
                     element[id][colors.value] += Number(qty.value);
+                    showMessage("Produit ajoute au panier", "#00dd19", cartButton);
                     return;
                 } else {
                     // Otherwise we add the new color and quantity
                     element[id][colors.value] = Number(qty.value);
+                    showMessage("Produit ajoute au panier", "#00dd19", cartButton);
                     return;
                 }
             }
         }
     // If no Id is found, we add the new id and values
     cart.push({[id] : {[colors.value]: Number(qty.value)}});
+    showMessage("Produit ajouté au panier", "#00dd19", cartButton); // Fix the position later
 }
 

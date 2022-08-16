@@ -61,16 +61,17 @@ export const insertElement = (child, parent) => {
  * @param { String } message 
  * @returns HTMLElement
  */
-export const createMessage = message => {
+export const createMessage = (message, color) => {
     const par = document.createElement("p");
     par.className = "message";
     par.innerText = `${message}`;
-    par.style.color = "#ce3333";
+    par.style.color = `${color}`;
     par.style.fontSize = "12px";
     par.style.margin = "5px auto";
     par.style.width = "fit-content";
     par.style.padding = "0 10px";
     par.style.textAlign = "center";
+    par.style.justifySelf = "flex-end";
     return par;
 }
 
@@ -101,8 +102,8 @@ export const removeElement = (element) => {
  * @param { String } message 
  * @param { HTMLElement } sibling 
  */
-export const showMessage = (message, sibling) => {
-    insertAfter(createMessage(message), sibling);
+export const showMessage = (message, color, sibling) => {
+    insertAfter(createMessage(message, color), sibling);
 }
 
 /**
