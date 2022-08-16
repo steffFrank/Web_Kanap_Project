@@ -2,6 +2,7 @@
 import { fetchData, insertElement, removeElement, showMessage, getLocalStorage, urlProducts } from "./helper_functions.js";
 
 const cart = getLocalStorage("savedProducts");
+// localStorage.removeItem("savedProducts");
 console.log(cart);
 // Get the product id 
 const productURL = new URL(window.location.href); // Get the url of the page
@@ -69,37 +70,25 @@ cartButton.addEventListener("click", () => {
     }
     removeElement(".message");
     localStorage.setItem("savedProducts", JSON.stringify(cart));
+    qty.value = 1;
+    colors.value = "";
 })
 
-/**
- * Add products in the cart
- * @param { String | Number} id 
- * @returns void
- */
+
 const addToCart = id => {
-    // Loop through all the elements of the cart
-    for (let element of cart) {
-        if (Object.keys(element)[0] === id) {
-            // We increase the quantity if the id and colors are matching
-            if (Object.keys(element[id]).includes(colors.value)) {
-                    element[id][colors.value] += Number(qty.value);
-                    qty.value = 1;
-                    colors.value = "";
-                    showMessage("Produit ajoute au panier", "#00dd19", cartButton);
+    for (let item of cart) {
+        if (item.id === id) {
+            for (let color of Object.keys(item.colors)) {
+                if (color === colors.value) {
+                    item.colors[color] += Number(qty.value);
                     return;
                 } else {
-                    // Otherwise we add the new color and quantity
-                    element[id][colors.value] = Number(qty.value);
-                    showMessage("Produit ajouté au panier", "#00dd19", cartButton);
-                    qty.value = 1;
-                    colors.value = "";
+                    item.colors = {...item.colors, [colors.value]: Number(qty.value)};
                     return;
                 }
             }
         }
-    // If no Id is found, we add the new id and values
-    cart.push({[id] : {[colors.value]: Number(qty.value)}});
-    qty.value = 1;
-    colors.value = "";
+    }
+    cart.push({id: id, colors: {[colors.value]:Number(qty.value)}});
 }
 
