@@ -22,7 +22,7 @@ const displayCartProducts = async cartProducts => {
             const itemQty = Object.values(item)[0][color];
             createArticle(data, color, itemQty);
             // totalQuantity += itemQty;
-            // totalPrice += data.price;
+            // totalPrice += data.price * itemQty;
             // document.getElementById("totalQuantity").innerText = totalQuantity;
             // document.getElementById("totalPrice").innerText = totalPrice;
             // insertElement(article, "#cart__items");
@@ -39,14 +39,6 @@ const displayCartProducts = async cartProducts => {
     })
 }
 
-// const deleteItem = (id, color) => {
-//     console.log("delete item");
-//     const item = document.querySelector(`article[data-id=${id}], article
-// [data-color]=${color}`);
-//     console.log("here");
-//     item.remove();
-//     console.log(removed);
-// }
 displayCartProducts(cart);
 
 // Helper function
@@ -83,9 +75,17 @@ const createArticle = (data, color, qty) => {
     insertElement(article, "#cart__items");
     for (const element of document.querySelectorAll(".deleteItem")) {
             element.addEventListener("click", () => {
-                const root = element.closest(".cart__item");
-                if (root.dataset.id == data._id && root.dataset.color === color) {
-                    root.remove();
+                const product = element.closest(".cart__item");
+                if (product.dataset.id == data._id && product.dataset.color === color) {
+                    const result = cart.filter(item => {
+                        const colorList = Object.keys(Object.values(item)[0]);
+                        for (let color of colorList) {
+                            return color !== product.dataset.color && product.dataset.id !== Object.keys(item)[0];
+                        }
+                        return item
+                    })
+                    localStorage.setItem("savedProducts", JSON.stringify(result));
+                    product.remove();
                 }
             })
         }
