@@ -9,6 +9,7 @@ const description = document.getElementById("description");
 const colors = document.getElementById("colors");
 const img = document.createElement("img");
 const qty = document.getElementById("quantity");
+const cartButton = document.getElementById("addToCart");
 
 // Url to fetch the product
 const url = "http://localhost:3000/api/products";
@@ -66,17 +67,19 @@ const insertOptions = (parent, list) => {
 // }
 // localStorage.setItem("savedProducts", JSON.stringify(data));
 
-const cartButton = document.getElementById("addToCart");
+// Add an event listener on the button
 cartButton.addEventListener("click", () => {
-    if (qty.value <= 0) {
-        showMessage("Insérez un numero entre 1 et 100!", qty)
+    // Display an error message if the quantity is not between 0 and 100
+    if (qty.value <= 0 || qty.value > 100) {
+        showMessage("Insérez un numero entre 1 et 100!", qty);
+        qty.value = 1;
     }
     if (colors.value == "") {
         showMessage("Sélectionnez une couleur!", colors);
     }
     setTimeout(() => {
         removeMessage();
-    }, 2000);
+    }, 3000);
 })
 
 
