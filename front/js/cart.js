@@ -11,8 +11,6 @@ const cart = getLocalStorage("savedProducts");
  * @param { Array } cartProducts 
  */
 const displayCartProducts = async cartProducts => {
-    let totalQuantity = 0;
-    let totalPrice = 0;
     cartProducts.map( async item => {
         // Url of the specific product
         const urlProduct = urlProducts + `/${Object.keys(item)[0]}`;
@@ -20,14 +18,14 @@ const displayCartProducts = async cartProducts => {
         const colorList = Object.keys(Object.values(item)[0]);
         for (let color of colorList) {
             const itemQty = Object.values(item)[0][color];
-            createArticle(data, color, itemQty);
+           createArticle(data, color, itemQty);
+        
         }
         
     })
 }
 
 displayCartProducts(cart);
-
 // Helper function
 /**
  * Create an article element with all the details
@@ -60,6 +58,7 @@ const createArticle = (data, color, qty) => {
                             </div>
                         </div>`
     insertElement(article, "#cart__items");
+    
     // Loop through the delete button to add a listener, try to remove the duplication with input
     for (const element of document.querySelectorAll(".deleteItem")) {
             element.addEventListener("click", () => {
@@ -74,6 +73,7 @@ const createArticle = (data, color, qty) => {
                     })
                     localStorage.setItem("savedProducts", JSON.stringify(result));
                     product.remove();
+                    computeTotals();
                 }
             })
     }
@@ -85,12 +85,36 @@ const createArticle = (data, color, qty) => {
                 const colorList = Object.keys(Object.values(item)[0]);
                 for (let color of colorList) {
                     if (Object.keys(item)[0] === product.dataset.id && product.dataset.color === color) {
-                        item[product.dataset.id][color] = event.target.value;
+                        item[product.dataset.id][color] = Number(event.target.value);
+                        computeTotals();
+
                     }
                 }
                 return item;
-            })
+            });
             localStorage.setItem("savedProducts", JSON.stringify(result));
         })
     }
 }
+
+
+const computeTotals = () => {
+    let totalPrice = 0;
+    let totalQuantity = 0;
+    const cart = getLocalStorage("savedProducts");
+    cart.map(async item => {
+        const urlProduct = urlProducts + `/${Object.keys(item)[0]}`;
+        const data = await fetchData(urlProduct);
+        const colorList = Object.keys(Object.values(item)[0]);
+        for (let color of colorList) {
+            const itemQty = Object.values(item)[0][color];
+            totalPrice += itemQty * data.price;
+            totalQuantity += itemQty;
+            document.getElementById("totalPrice").innerText = totalPrice;
+            document.getElementById("totalQuantity").innerText = totalQuantity;
+        }
+    })
+    
+    
+}
+computeTotals();

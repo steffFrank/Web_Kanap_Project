@@ -89,7 +89,7 @@ const addToCart = id => {
                 } else {
                     // Otherwise we add the new color and quantity
                     element[id][colors.value] = Number(qty.value);
-                    showMessage("Produit ajoute au panier", "#00dd19", cartButton);
+                    showMessage("Produit ajouté au panier", "#00dd19", cartButton);
                     return;
                 }
             }
