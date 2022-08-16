@@ -60,7 +60,6 @@ cartButton.addEventListener("click", () => {
     if (qty.value <= 0 || qty.value > 100 || colors.value == "") {
         if (qty.value <= 0 || qty.value > 100) {
             showMessage("Insérez un numero entre 1 et 100!",textColor, qty);
-            qty.value = 1;
         }
         if (colors.value == "") {
             showMessage("Sélectionnez une couleur!", textColor, colors);
@@ -84,18 +83,23 @@ const addToCart = id => {
             // We increase the quantity if the id and colors are matching
             if (Object.keys(element[id]).includes(colors.value)) {
                     element[id][colors.value] += Number(qty.value);
+                    qty.value = 1;
+                    colors.value = "";
                     showMessage("Produit ajoute au panier", "#00dd19", cartButton);
                     return;
                 } else {
                     // Otherwise we add the new color and quantity
                     element[id][colors.value] = Number(qty.value);
                     showMessage("Produit ajouté au panier", "#00dd19", cartButton);
+                    qty.value = 1;
+                    colors.value = "";
                     return;
                 }
             }
         }
     // If no Id is found, we add the new id and values
     cart.push({[id] : {[colors.value]: Number(qty.value)}});
-    showMessage("Produit ajouté au panier", "#00dd19", cartButton); // Fix the position later
+    qty.value = 1;
+    colors.value = "";
 }
 
