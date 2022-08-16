@@ -1,5 +1,5 @@
 // Functions to display the details of the product page
-import { fetchData, insertElement, createMessage } from "./helper_functions.js";
+import { fetchData, insertElement, removeElement, showMessage } from "./helper_functions.js";
 // Get the product id 
 const productURL = new URL(window.location.href);
 const id = productURL.searchParams.get("id");
@@ -77,20 +77,8 @@ cartButton.addEventListener("click", () => {
     if (colors.value == "") {
         showMessage("Sélectionnez une couleur!", colors);
     }
-    setTimeout(() => {
-        removeMessage();
-    }, 3000);
+    removeElement(".message");
 })
 
 
-const showMessage = (message, sibbling) => {
-    const parent = sibbling.parentElement;
-    parent.appendChild(createMessage(message));
-}
 
-const removeMessage = () => {
-    const msg = document.querySelectorAll(".message");
-    for (let m of msg) {
-        m.remove();
-    }
-}

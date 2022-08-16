@@ -73,3 +73,34 @@ export const createMessage = message => {
     par.style.textAlign = "center";
     return par;
 }
+
+/**
+ * Inserts an Element after a choosen one
+ * @param { HTMLElement } newElement 
+ * @param { HTMLElement } siblingElement 
+ */
+export const insertAfter = (newElement, siblingElement) => {
+    siblingElement.parentElement.insertBefore(newElement, siblingElement.nextSibling)
+}
+
+/**
+ * Remove the choosen element after a delay
+ * @param { String } element class or id
+ */
+export const removeElement = (element) => {
+    setTimeout(() => {
+        const msg = document.querySelectorAll(element);
+        for (let m of msg) {
+            m.remove();
+        }
+    }, 3000);
+}
+
+/**
+ * Display an error message after the sibling element
+ * @param { String } message 
+ * @param { HTMLElement } sibling 
+ */
+export const showMessage = (message, sibling) => {
+    insertAfter(createMessage(message), sibling);
+}
