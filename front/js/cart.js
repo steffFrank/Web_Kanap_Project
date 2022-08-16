@@ -21,19 +21,6 @@ const displayCartProducts = async cartProducts => {
         for (let color of colorList) {
             const itemQty = Object.values(item)[0][color];
             createArticle(data, color, itemQty);
-            // totalQuantity += itemQty;
-            // totalPrice += data.price * itemQty;
-            // document.getElementById("totalQuantity").innerText = totalQuantity;
-            // document.getElementById("totalPrice").innerText = totalPrice;
-            // insertElement(article, "#cart__items");
-            // for (const element of document.querySelectorAll(".deleteItem")) {
-            //     element.addEventListener("click", () => {
-            //         const root = element.closest(".cart__item");
-            //         if (root.dataset.id == data._id && root.dataset.color === color) {
-            //             root.remove();
-            //         }
-            //     })
-            // }
         }
         
     })
@@ -73,9 +60,10 @@ const createArticle = (data, color, qty) => {
                             </div>
                         </div>`
     insertElement(article, "#cart__items");
+    // Loop through the delete button to add a listener, try to remove the duplication with input
     for (const element of document.querySelectorAll(".deleteItem")) {
             element.addEventListener("click", () => {
-                const product = element.closest(".cart__item");
+                const product = element.closest(".cart__item");                
                 if (product.dataset.id == data._id && product.dataset.color === color) {
                     const result = cart.filter(item => {
                         const colorList = Object.keys(Object.values(item)[0]);
@@ -88,6 +76,21 @@ const createArticle = (data, color, qty) => {
                     product.remove();
                 }
             })
-        }
+    }
+    // Loop througn the input to add event listener, try to remove the duplication with delete
+    for (const element of document.querySelectorAll(".itemQuantity")) {
+        element.addEventListener("change", event => {
+            const product = element.closest(".cart__item");                
+            const result = cart.map(item => {
+                const colorList = Object.keys(Object.values(item)[0]);
+                for (let color of colorList) {
+                    if (Object.keys(item)[0] === product.dataset.id && product.dataset.color === color) {
+                        item[product.dataset.id][color] = event.target.value;
+                    }
+                }
+                return item;
+            })
+            localStorage.setItem("savedProducts", JSON.stringify(result));
+        })
+    }
 }
-
