@@ -1,8 +1,8 @@
 // Functions to display the details of the product page
 import { fetchData, insertElement, removeElement, showMessage } from "./helper_functions.js";
 // Get the product id 
-const productURL = new URL(window.location.href);
-const id = productURL.searchParams.get("id");
+const productURL = new URL(window.location.href); // Get the url of the page
+const id = productURL.searchParams.get("id");     // Get the id from the url
 const productName = document.getElementById("title");
 const price = document.getElementById("price");
 const description = document.getElementById("description");
@@ -68,17 +68,47 @@ const insertOptions = (parent, list) => {
 // localStorage.setItem("savedProducts", JSON.stringify(data));
 
 // Add an event listener on the button
+const cart = [];
 cartButton.addEventListener("click", () => {
+    // const product = {};
     // Display an error message if the quantity is not between 0 and 100
-    if (qty.value <= 0 || qty.value > 100) {
-        showMessage("Insérez un numero entre 1 et 100!", qty);
-        qty.value = 1;
-    }
-    if (colors.value == "") {
-        showMessage("Sélectionnez une couleur!", colors);
+    if (qty.value <= 0 || qty.value > 100 || colors.value == "") {
+        if (qty.value <= 0 || qty.value > 100) {
+            showMessage("Insérez un numero entre 1 et 100!", qty);
+            qty.value = 1;
+        }
+        if (colors.value == "") {
+            showMessage("Sélectionnez une couleur!", colors);
+        }
+    } else {
+        // product[id] = {[colors.value]: Number(qty.value)};
+        addToCart(id);
     }
     removeElement(".message");
+    
 })
 
-
+/**
+ * Add products in the cart
+ * @param { String | Number} id 
+ * @returns void
+ */
+const addToCart = id => {
+    // Loop through all the elements of the cart
+    for (let element of cart) {
+        if (Object.keys(element)[0] === id) {
+            // We increase the quantity if the id and colors are matching
+            if (Object.keys(element[id]).includes(colors.value)) {
+                    element[id][colors.value] += Number(qty.value);
+                    return;
+                } else {
+                    // Otherwise we add the new color and quantity
+                    element[id][colors.value] = Number(qty.value);
+                    return;
+                }
+            }
+        }
+    // If no Id is found, we add the new id and values
+    cart.push({[id] : {[colors.value]: Number(qty.value)}});
+}
 
