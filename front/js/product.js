@@ -1,5 +1,5 @@
 // Functions to display the details of the product page
-import { fetchData, insertElement, removeElement, showMessage, getLocalStorage } from "./helper_functions.js";
+import { fetchData, insertElement, removeElement, showMessage, getLocalStorage, urlProducts } from "./helper_functions.js";
 
 const cart = getLocalStorage("savedProducts");
 console.log(cart);
@@ -15,8 +15,7 @@ const qty = document.getElementById("quantity");
 const cartButton = document.getElementById("addToCart");
 
 // Url to fetch the product
-const url = "http://localhost:3000/api/products";
-const urlProduct = url + `/${id}`;
+const urlProduct = urlProducts + `/${id}`;
 
 /**
  * Insert the product data fetched from the url

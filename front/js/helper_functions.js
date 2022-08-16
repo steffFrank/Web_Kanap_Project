@@ -1,5 +1,9 @@
 // Helper functions
 
+// Url of all the products in the API
+export const urlProducts = "http://localhost:3000/api/products";
+
+
 /**
  * Fetchs the data from the API
  * @param { String } url 
