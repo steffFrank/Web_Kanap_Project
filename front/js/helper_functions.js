@@ -23,7 +23,7 @@ export const displayData = async url => {
     const data = await fetchData(url);
     data.map(item => {
         insertElement(createCard(item), "#items");
-    })
+    });
 }
 
 /**
@@ -80,7 +80,7 @@ export const createMessage = message => {
  * @param { HTMLElement } siblingElement 
  */
 export const insertAfter = (newElement, siblingElement) => {
-    siblingElement.parentElement.insertBefore(newElement, siblingElement.nextSibling)
+    siblingElement.parentElement.insertBefore(newElement, siblingElement.nextSibling);
 }
 
 /**
@@ -93,7 +93,7 @@ export const removeElement = (element) => {
         for (let m of msg) {
             m.remove();
         }
-    }, 3000);
+    }, 2000);
 }
 
 /**
@@ -103,4 +103,13 @@ export const removeElement = (element) => {
  */
 export const showMessage = (message, sibling) => {
     insertAfter(createMessage(message), sibling);
+}
+
+/**
+ * Get the data in the local storage of a specific id
+ * @param { String } id 
+ * @returns Array
+ */
+export const getLocalStorage = (id) => {
+    return JSON.parse(localStorage.getItem(id)) || [];
 }

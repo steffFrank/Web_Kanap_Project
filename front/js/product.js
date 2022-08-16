@@ -1,5 +1,8 @@
 // Functions to display the details of the product page
-import { fetchData, insertElement, removeElement, showMessage } from "./helper_functions.js";
+import { fetchData, insertElement, removeElement, showMessage, getLocalStorage } from "./helper_functions.js";
+
+const cart = getLocalStorage("savedProducts");
+console.log(cart);
 // Get the product id 
 const productURL = new URL(window.location.href); // Get the url of the page
 const id = productURL.searchParams.get("id");     // Get the id from the url
@@ -50,25 +53,7 @@ const insertOptions = (parent, list) => {
     }
 }
 
-// Save data in local storage
-// const cart = [[id1, color1, qty], [id1, color2, qty], [id1, color3, qty], ...[id1000, color1000, qty]];
-// const cart = [{id: id1, color: color1, qty: qty}, {id: id1, color: color2, qty: qty}, {id: id1, color: color3, qty: qty}]
-// const cart = {
-//     id1: {
-//         color1: qty1,
-//         color2: qty2,
-//         color3: qty3
-//     },
-//     id2: {
-//         color1: qty1,
-//         color2: qty2,
-//         color3: qty3
-//     }
-// }
-// localStorage.setItem("savedProducts", JSON.stringify(data));
-
 // Add an event listener on the button
-const cart = [];
 cartButton.addEventListener("click", () => {
     // const product = {};
     // Display an error message if the quantity is not between 0 and 100
@@ -85,7 +70,7 @@ cartButton.addEventListener("click", () => {
         addToCart(id);
     }
     removeElement(".message");
-    
+    localStorage.setItem("savedProducts", JSON.stringify(cart));
 })
 
 /**
