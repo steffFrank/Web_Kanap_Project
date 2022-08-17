@@ -5,6 +5,7 @@ import { getLocalStorage, fetchData, urlProducts, insertElement } from "./helper
 
 // Get the data from localStorage
 const cart = getLocalStorage("savedProducts");
+// localStorage.removeItem("savedProducts");
 
 /**
  * Display all the products in the cartProducts array
@@ -13,13 +14,11 @@ const cart = getLocalStorage("savedProducts");
 const displayCartProducts = async cartProducts => {
     cartProducts.map( async item => {
         // Url of the specific product
-        const urlProduct = urlProducts + `/${Object.keys(item)[0]}`;
+        const urlProduct = urlProducts + `/${item.id}`;
         const data = await fetchData(urlProduct);
-        const colorList = Object.keys(Object.values(item)[0]);
-        for (let color of colorList) {
-            const itemQty = Object.values(item)[0][color];
-           createArticle(data, color, itemQty);
-        
+        for (let color of Object.keys(item.colors)) {
+            const itemQty = item.colors[color];
+            createArticle(data, color, itemQty);
         }
         
     })
@@ -60,61 +59,61 @@ const createArticle = (data, color, qty) => {
     insertElement(article, "#cart__items");
     
     // Loop through the delete button to add a listener, try to remove the duplication with input
-    for (const element of document.querySelectorAll(".deleteItem")) {
-            element.addEventListener("click", () => {
-                const product = element.closest(".cart__item");                
-                if (product.dataset.id == data._id && product.dataset.color === color) {
-                    const result = cart.filter(item => {
-                        const colorList = Object.keys(Object.values(item)[0]);
-                        for (let color of colorList) {
-                            return color !== product.dataset.color && product.dataset.id !== Object.keys(item)[0];
-                        }
-                        return item
-                    })
-                    localStorage.setItem("savedProducts", JSON.stringify(result));
-                    product.remove();
-                    computeTotals();
-                }
-            })
-    }
+    // for (const element of document.querySelectorAll(".deleteItem")) {
+    //         element.addEventListener("click", () => {
+    //             const product = element.closest(".cart__item");                
+    //             if (product.dataset.id == data._id && product.dataset.color === color) {
+    //                 const result = cart.filter(item => {
+    //                     const colorList = Object.keys(Object.values(item)[0]);
+    //                     for (let color of colorList) {
+    //                         return color !== product.dataset.color && product.dataset.id !== Object.keys(item)[0];
+    //                     }
+    //                     return item
+    //                 })
+    //                 localStorage.setItem("savedProducts", JSON.stringify(result));
+    //                 product.remove();
+    //                 computeTotals();
+    //             }
+    //         })
+    // }
     // Loop througn the input to add event listener, try to remove the duplication with delete
-    for (const element of document.querySelectorAll(".itemQuantity")) {
-        element.addEventListener("change", event => {
-            const product = element.closest(".cart__item");                
-            const result = cart.map(item => {
-                const colorList = Object.keys(Object.values(item)[0]);
-                for (let color of colorList) {
-                    if (Object.keys(item)[0] === product.dataset.id && product.dataset.color === color) {
-                        item[product.dataset.id][color] = Number(event.target.value);
-                        computeTotals();
+    // for (const element of document.querySelectorAll(".itemQuantity")) {
+    //     element.addEventListener("change", event => {
+    //         const product = element.closest(".cart__item");                
+    //         const result = cart.map(item => {
+    //             const colorList = Object.keys(Object.values(item)[0]);
+    //             for (let color of colorList) {
+    //                 if (Object.keys(item)[0] === product.dataset.id && product.dataset.color === color) {
+    //                     item[product.dataset.id][color] = Number(event.target.value);
+    //                     computeTotals();
 
-                    }
-                }
-                return item;
-            });
-            localStorage.setItem("savedProducts", JSON.stringify(result));
-        })
-    }
+    //                 }
+    //             }
+    //             return item;
+    //         });
+    //         localStorage.setItem("savedProducts", JSON.stringify(result));
+    //     })
+    // }
 }
 
 
-const computeTotals = () => {
-    let totalPrice = 0;
-    let totalQuantity = 0;
-    const cart = getLocalStorage("savedProducts");
-    cart.map(async item => {
-        const urlProduct = urlProducts + `/${Object.keys(item)[0]}`;
-        const data = await fetchData(urlProduct);
-        const colorList = Object.keys(Object.values(item)[0]);
-        for (let color of colorList) {
-            const itemQty = Object.values(item)[0][color];
-            totalPrice += itemQty * data.price;
-            totalQuantity += itemQty;
-            document.getElementById("totalPrice").innerText = totalPrice;
-            document.getElementById("totalQuantity").innerText = totalQuantity;
-        }
-    })
+// const computeTotals = () => {
+//     let totalPrice = 0;
+//     let totalQuantity = 0;
+//     const cart = getLocalStorage("savedProducts");
+//     cart.map(async item => {
+//         const urlProduct = urlProducts + `/${Object.keys(item)[0]}`;
+//         const data = await fetchData(urlProduct);
+//         const colorList = Object.keys(Object.values(item)[0]);
+//         for (let color of colorList) {
+//             const itemQty = Object.values(item)[0][color];
+//             totalPrice += itemQty * data.price;
+//             totalQuantity += itemQty;
+//             document.getElementById("totalPrice").innerText = totalPrice;
+//             document.getElementById("totalQuantity").innerText = totalQuantity;
+//         }
+//     })
     
     
-}
-computeTotals();
+// }
+// computeTotals();

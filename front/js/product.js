@@ -2,7 +2,6 @@
 import { fetchData, insertElement, removeElement, showMessage, getLocalStorage, urlProducts } from "./helper_functions.js";
 
 const cart = getLocalStorage("savedProducts");
-// localStorage.removeItem("savedProducts");
 console.log(cart);
 // Get the product id 
 const productURL = new URL(window.location.href); // Get the url of the page
