@@ -1,8 +1,8 @@
 // Helper functions
 
+//================================= Data =======================================
 // Url of all the products in the API
 export const urlProducts = "http://localhost:3000/api/products";
-
 
 /**
  * Fetchs the data from the API
@@ -19,6 +19,18 @@ export const fetchData = async url => {
     }
 }
 
+
+/**
+ * Get the data in the local storage of a specific id
+ * @param { String } id 
+ * @returns Array
+ */
+ export const getLocalStorage = (id) => {
+    return JSON.parse(localStorage.getItem(id)) || [];
+}
+
+
+//================================= Display ====================================
 /**
  * Displays the data fetched from url
  * @param { String } url 
@@ -30,6 +42,16 @@ export const displayData = async url => {
     });
 }
 
+/**
+ * Display an error message after the sibling element
+ * @param { String } message 
+ * @param { HTMLElement } sibling 
+ */
+ export const showMessage = (message, color, sibling) => {
+    insertAfter(createMessage(message, color), sibling);
+}
+
+//================================== Create Element ============================
 /**
 * Creates a card element
 * @param { Object } card 
@@ -49,23 +71,12 @@ export const createCard = card => {
     return link;            
 }
 
-// Create a function to insert a card
-/**
- * Appends an element in the parent element
- * @param { HTMLElement } child
- * @param { String } parent class or id
- */
-export const insertElement = (child, parent) => {
-    const parentElement = document.querySelector(parent);
-    parentElement.appendChild(child);
-}
-
 /**
  * Creates a paragraph message
  * @param { String } message 
  * @returns HTMLElement
  */
-export const createMessage = (message, color) => {
+ export const createMessage = (message, color) => {
     const par = document.createElement("p");
     par.className = "message";
     par.innerText = `${message}`;
@@ -79,6 +90,17 @@ export const createMessage = (message, color) => {
     return par;
 }
 
+//================================== Insertion =================================
+/**
+ * Appends an element in the parent element
+ * @param { HTMLElement } child
+ * @param { String } parent class or id
+ */
+export const insertElement = (child, parent) => {
+    const parentElement = document.querySelector(parent);
+    parentElement.appendChild(child);
+}
+
 /**
  * Inserts an Element after a choosen one
  * @param { HTMLElement } newElement 
@@ -88,6 +110,7 @@ export const insertAfter = (newElement, siblingElement) => {
     siblingElement.parentElement.insertBefore(newElement, siblingElement.nextSibling);
 }
 
+//================================= Deletion ==================================
 /**
  * Remove the choosen element after a delay
  * @param { String } element class or id
@@ -101,20 +124,87 @@ export const removeElement = (element) => {
     }, 2000);
 }
 
-/**
- * Display an error message after the sibling element
- * @param { String } message 
- * @param { HTMLElement } sibling 
- */
-export const showMessage = (message, color, sibling) => {
-    insertAfter(createMessage(message, color), sibling);
+
+//================================= Form Validation ============================
+
+const DisplayErrorMessage = (message, id) => {
+    const element = document.getElementById(id);
+    element.innerText = message;
+    setTimeout(() => {
+        element.innerText = "";
+    }, 2000);
 }
 
-/**
- * Get the data in the local storage of a specific id
- * @param { String } id 
- * @returns Array
- */
-export const getLocalStorage = (id) => {
-    return JSON.parse(localStorage.getItem(id)) || [];
+const validateName = (field, displayId) => {
+    let message = "";
+    const name = document.getElementById(field);
+    const regex = new RegExp("[^a-zA-Z ]+");
+    if (regex.test(name.value)) {
+        message = "Les nombres et caracteres speciaux ne sont pas permis";
+    } else if (name.value.length > 18) {
+        message = "Juste 18 caracteres permis";
+    } else if (name.value.split(" ").length >= 3) {
+        message = "Juste deux noms sont permis";
+    } else {
+        return true;
+    }
+    DisplayErrorMessage(message, displayId);
+    return false;
+}
+
+const validateAddress = (field, displayId) => {
+    let message = "";
+    const regex = new RegExp("^[1-9]?[\\d]?[\\d]?[\\d]{1} \\w.+ \\d{5}");
+    const address = document.getElementById(field);
+    if (!regex.test(address.value)) {
+        message = "Format non valide. Example: 17 rue de la vallee 90212";
+        DisplayErrorMessage(message, displayId);
+        return false;
+    } else {
+        return true;
+    }
+}
+
+const validateCity = (field, displayId) => {
+    let message = "";
+    const regex = new RegExp("[\\d]");
+    const city = document.getElementById(field);
+    if (!regex.test(city.value)) {
+        message = "Auncun nombre n'est admis";
+        DisplayErrorMessage(message, displayId);
+        return false;
+    } else {
+        return true;
+    }
+}
+
+const validateEmail = (field, displayId) => {
+    let message = "";
+    const regex = new RegExp("\\w+[.\\-_]?\\w+@\\w+\\.\\w?\\w{2}");
+    console.log(regex);
+    const email = document.getElementById(field);
+    if (!regex.test(email.value)) {
+        message = "Entrez un email valide. Example jacopo@yahoo.fr";
+        DisplayErrorMessage(message, displayId);
+        return false;
+    } else {
+        return true;
+    }
+}
+
+export const validateField = (field) => {
+    switch (field) {
+        case "firstName":
+            return validateName(field, "firstNameErrorMsg");
+        case "lastName":
+            return validateName(field, "lastNameErrorMsg");
+        case "address":
+            return validateAddress(field, "addressErrorMsg");
+        case "city":
+            return validateCity(field, "cityErrorMsg");
+        case "email":
+            return validateEmail(field, "emailErrorMsg");
+        default:
+            return true;
+    }
 }

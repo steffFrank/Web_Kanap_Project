@@ -1,7 +1,7 @@
 // Functions to manage the cart
 
 // Import all the needed functions
-import { getLocalStorage, fetchData, urlProducts, insertElement } from "./helper_functions.js";
+import { getLocalStorage, fetchData, urlProducts, insertElement, validateField } from "./helper_functions.js";
 
 // Get the data from localStorage
 const cart = getLocalStorage("savedProducts");
@@ -12,7 +12,7 @@ const cart = getLocalStorage("savedProducts");
  * @param { Array } cartProducts 
  */
 const displayCartProducts = cartProducts => {
-    cartProducts.map( async item => {
+    cartProducts.map(async item => {
         // Url of the specific product
         const urlProduct = urlProducts + `/${item.id}`;
         const data = await fetchData(urlProduct);
@@ -32,41 +32,48 @@ displayCartProducts(cart);
 const modifyProduct = () => {
     for (const element of document.querySelectorAll(".itemQuantity")) {
         element.addEventListener("change", event => {
-            const product = element.closest(".cart__item");                
+            const product = element.closest(".cart__item");
             const result = cart.map(item => {
                 for (let color of Object.keys(item.colors)) {
                     if (item.id === product.dataset.id && product.dataset.color === color) {
-                        item.colors = {...item.colors, [color]: Number(event.target.value)}
+                        item.colors = { ...item.colors, [color]: Number(event.target.value) }
                     }
                 }
                 return item;
             });
             localStorage.setItem("savedProducts", JSON.stringify(result));
-            computeTotals();  
+            computeTotals();
         })
     }
 }
 
+/**
+ * Delete the selected products
+ */
 const deleteArticle = () => {
     //  Loop through the delete button to add a listener
     for (const element of document.querySelectorAll(".deleteItem")) {
-            element.addEventListener("click", () => {
-                const product = element.closest(".cart__item");
-                const newCart = (cart.map(item => {
-                    if (item.id === product.dataset.id) {
-                        for (let color of Object.keys(item.colors)) {
-                            if (color === product.dataset.color) {
-                                product.remove();
-                                delete item.colors[color];
-                            }
+        element.addEventListener("click", () => {
+            const product = element.closest(".cart__item");
+            // Loop through the item of the cart to remove the specific product
+            const newCart = (cart.map(item => {
+                if (item.id === product.dataset.id) {
+                    for (let color of Object.keys(item.colors)) {
+                        if (color === product.dataset.color) {
+                            product.remove();
+                            // If there is a match remove the specific color product
+                            delete item.colors[color];
                         }
                     }
-                    return item;
-
-                })).filter(item => Object.keys(item.colors).length !== 0)
-                    localStorage.setItem("savedProducts", JSON.stringify(newCart));
-                    computeTotals();
-            });
+                }
+                return item;
+                // Remove  all items with empty colors list
+            })).filter(item => Object.keys(item.colors).length !== 0)
+            // Save the new products
+            localStorage.setItem("savedProducts", JSON.stringify(newCart));
+            // Compute the new totals
+            computeTotals();
+        });
     }
 }
 // Helper function
@@ -129,9 +136,21 @@ const computeTotals = () => {
             totalPrice += itemQty * data.price;
             totalQuantity += itemQty;
         }
-        displayTotals(totalPrice,totalQuantity);
+        displayTotals(totalPrice, totalQuantity);
     });
     displayTotals(totalPrice, totalQuantity);
 }
 computeTotals();
+
+
+
+//=================================== Contact =================================
+const order = document.getElementById("order");
+order.addEventListener("click", () => {
+    validateField("firstName");
+    validateField("lastName");
+    validateField("address");
+    validateField("city");
+    validateField("email");
+})
 
