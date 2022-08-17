@@ -146,6 +146,7 @@ computeTotals();
 
 //================================= Contact Form ==============================
 const order = document.getElementById("order");
+// Add a click event on the order button
 order.addEventListener("click", () => {
     let contact = {};
     let productsId = [];
@@ -161,7 +162,9 @@ order.addEventListener("click", () => {
             productsId.push(item.id);
         const data = {contact: contact, products: productsId}
         const orderUrl = urlProducts + `/order`;
+        // Get the result of the order Id order 
         result = postData(orderUrl, data);
+        // Redirect to the confirmation page with orderId number
         result.then(res => document.location.href =`./confirmation.html?orderId=${res.orderId}`);
         })
     } else {
