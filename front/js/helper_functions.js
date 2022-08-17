@@ -14,7 +14,7 @@ export const fetchData = async url => {
         const response = await fetch(url);
         const data = await response.json();
         return data;
-    } catch(error) {
+    } catch (error) {
         console.log(error);
     }
 }
@@ -26,7 +26,7 @@ export const fetchData = async url => {
  */
 export const postData = async (url, data) => {
     try {
-            const response = await fetch(url, {
+        const response = await fetch(url, {
             method: "POST",
             mode: "cors",
             cache: "no-cache",
@@ -38,9 +38,9 @@ export const postData = async (url, data) => {
                 "Content-Type": "application/json; charset=utf-8"
             },
             body: JSON.stringify(data)
-            });
-            return response.json();
-    } catch(error) {
+        });
+        return response.json();
+    } catch (error) {
         console.log(error);
     }
 }
@@ -49,7 +49,7 @@ export const postData = async (url, data) => {
  * @param { String } id 
  * @returns Array
  */
- export const getLocalStorage = (id) => {
+export const getLocalStorage = (id) => {
     return JSON.parse(localStorage.getItem(id)) || [];
 }
 
@@ -71,7 +71,7 @@ export const displayData = async url => {
  * @param { String } message 
  * @param { HTMLElement } sibling 
  */
- export const showMessage = (message, color, sibling) => {
+export const showMessage = (message, color, sibling) => {
     insertAfter(createMessage(message, color), sibling);
 }
 
@@ -92,7 +92,7 @@ export const createCard = card => {
                         <h3 class="productName">${card.name}</h3>
                             <p class="productDescription">${card.description}</p>
                       </article>`;
-    return link;            
+    return link;
 }
 
 /**
@@ -100,7 +100,7 @@ export const createCard = card => {
  * @param { String } message 
  * @returns HTMLElement
  */
- export const createMessage = (message, color) => {
+export const createMessage = (message, color) => {
     const par = document.createElement("p");
     par.className = "message";
     par.innerText = `${message}`;

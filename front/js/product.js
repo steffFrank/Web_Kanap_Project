@@ -27,7 +27,7 @@ const insertDetails = async (url) => {
     const data = await fetchData(url);
     // Change the title of the page
     document.title = data.name;
-    
+
     // Insert data
     productName.innerText = data.name;
     price.innerText = data.price;
@@ -60,7 +60,7 @@ cartButton.addEventListener("click", () => {
     const textColor = "#fbbcbc";
     if (qty.value <= 0 || qty.value > 100 || colors.value == "") {
         if (qty.value <= 0 || qty.value > 100) {
-            showMessage("Insérez un numero entre 1 et 100!",textColor, qty);
+            showMessage("Insérez un numero entre 1 et 100!", textColor, qty);
         }
         if (colors.value == "") {
             showMessage("Sélectionnez une couleur!", textColor, colors);
@@ -87,12 +87,12 @@ const addToCart = id => {
                     item.colors[color] += Number(qty.value);
                     return;
                 } else {
-                    item.colors = {...item.colors, [colors.value]: Number(qty.value)};
+                    item.colors = { ...item.colors, [colors.value]: Number(qty.value) };
                     return;
                 }
             }
         }
     }
-    cart.push({id: id, colors: {[colors.value]:Number(qty.value)}});
+    cart.push({ id: id, colors: { [colors.value]: Number(qty.value) } });
 }
 
