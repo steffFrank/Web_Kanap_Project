@@ -57,7 +57,7 @@ const insertOptions = (parent, list) => {
 // Add an event listener on the button
 cartButton.addEventListener("click", () => {
     // Display an error message if the quantity is not between 0 and 100
-    const textColor = "#770e0e";
+    const textColor = "#fbbcbc";
     if (qty.value <= 0 || qty.value > 100 || colors.value == "") {
         if (qty.value <= 0 || qty.value > 100) {
             showMessage("Insérez un numero entre 1 et 100!",textColor, qty);
