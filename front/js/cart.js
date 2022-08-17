@@ -1,7 +1,7 @@
 // Functions to manage the cart
 
 // Import all the needed functions
-import { getLocalStorage, fetchData, urlProducts, insertElement, validateField, postData } from "./helper_functions.js";
+import { getLocalStorage, fetchData, urlProducts, insertElement, validateField, postData, showMessage, removeElement } from "./helper_functions.js";
 
 // Get the data from localStorage
 const cart = getLocalStorage("savedProducts");
@@ -20,7 +20,7 @@ const displayCartProducts = cartProducts => {
             const itemQty = item.colors[color];
             createArticle(data, color, itemQty);
         }
-        modifyProduct();
+        modifyProductQuantity();
         deleteArticle(item);
     });
 }
@@ -29,14 +29,21 @@ displayCartProducts(cart);
 /**
  * Modify the quantity of the input
  */
-const modifyProduct = () => {
+const modifyProductQuantity = () => {
     for (const element of document.querySelectorAll(".itemQuantity")) {
         element.addEventListener("change", event => {
+            const actualValue = Number(event.target.value);
+            
             const product = element.closest(".cart__item");
             const result = cart.map(item => {
                 for (let color of Object.keys(item.colors)) {
                     if (item.id === product.dataset.id && product.dataset.color === color) {
-                        item.colors = { ...item.colors, [color]: Number(event.target.value) }
+                        if (actualValue <= 0 || actualValue > 100) {
+                            showMessage("Insérez un numero entre 1 et 100!", "#fbbcbc", element);
+                            removeElement(".message");
+                        } else {
+                            item.colors = { ...item.colors, [color]: actualValue }
+                        }
                     }
                 }
                 return item;
