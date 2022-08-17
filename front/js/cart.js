@@ -20,10 +20,15 @@ const displayCartProducts = cartProducts => {
             const itemQty = item.colors[color];
             createArticle(data, color, itemQty);
         }
-        modifyProduct(data);
+        modifyProduct();
+        deleteArticle(item);
     });
 }
 displayCartProducts(cart);
+
+/**
+ * Modify the quantity of the input
+ */
 const modifyProduct = () => {
     for (const element of document.querySelectorAll(".itemQuantity")) {
         element.addEventListener("change", event => {
@@ -42,13 +47,34 @@ const modifyProduct = () => {
     }
 }
 
+const deleteArticle = () => {
+    //  Loop through the delete button to add a listener
+    for (const element of document.querySelectorAll(".deleteItem")) {
+            element.addEventListener("click", () => {
+                const product = element.closest(".cart__item");
+                const newCart = (cart.map(item => {
+                    if (item.id === product.dataset.id) {
+                        for (let color of Object.keys(item.colors)) {
+                            if (color === product.dataset.color) {
+                                product.remove();
+                                delete item.colors[color];
+                            }
+                        }
+                    }
+                    return item;
+
+                })).filter(item => Object.keys(item.colors).length !== 0)
+                    localStorage.setItem("savedProducts", JSON.stringify(newCart));
+                    computeTotals();
+            });
+    }
+}
 // Helper function
 /**
  * Create an article element with all the details
- * @param { Object } cata data fetched from the id 
+ * @param { Object } data data fetched from the id 
  * @param { String } color color of the actual product 
  * @param { Number } qty Qty of the actual product 
- * @returns HTMLElement article
  */
 const createArticle = (data, color, qty) => {
     const article = document.createElement("article");
@@ -74,45 +100,38 @@ const createArticle = (data, color, qty) => {
                             </div>
                         </div>`
     insertElement(article, "#cart__items");
-    // Loop through the delete button to add a listener, try to remove the duplication with input
-    // for (const element of document.querySelectorAll(".deleteItem")) {
-    //         element.addEventListener("click", () => {
-    //             const product = element.closest(".cart__item");                
-    //             if (product.dataset.id == data._id && product.dataset.color === color) {
-    //                 const result = cart.filter(item => {
-    //                     const colorList = Object.keys(Object.values(item)[0]);
-    //                     for (let color of colorList) {
-    //                         return color !== product.dataset.color && product.dataset.id !== Object.keys(item)[0];
-    //                     }
-    //                     return item
-    //                 })
-    //                 localStorage.setItem("savedProducts", JSON.stringify(result));
-    //                 product.remove();
-    //                 computeTotals();
-    //             }
-    //         })
-    // }
-    // Loop througn the input to add event listener, try to remove the duplication with delete
+}
+/**
+ * Display the totals
+ * @param { Number } totalPrice 
+ * @param { Number } totalQuantity 
+ */
+const displayTotals = (totalPrice, totalQuantity) => {
+    document.getElementById("totalPrice").innerText = totalPrice;
+    document.getElementById("totalQuantity").innerText = totalQuantity;
 }
 
-
-
+/**
+ * Compute the totals of the products
+ */
 const computeTotals = () => {
+    // Declare and initialize each total
     let totalPrice = 0;
     let totalQuantity = 0;
+    // Get the actual items in the cart
     const cart = getLocalStorage("savedProducts");
+    // Loop through each item of the cart and sum up the quantities and prices
     cart.map(async item => {
         const urlProduct = urlProducts + `/${item.id}`;
         const data = await fetchData(urlProduct);
         for (let color of Object.keys(item.colors)) {
             const itemQty = item.colors[color];
-            console.log(data._id);
-            console.log(itemQty, data.price);
             totalPrice += itemQty * data.price;
             totalQuantity += itemQty;
         }
-        document.getElementById("totalPrice").innerText = totalPrice;
-        document.getElementById("totalQuantity").innerText = totalQuantity;
-    })
+        displayTotals(totalPrice,totalQuantity);
+    });
+    displayTotals(totalPrice, totalQuantity);
 }
 computeTotals();
+
