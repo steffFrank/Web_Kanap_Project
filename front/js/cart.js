@@ -11,7 +11,7 @@ const cart = getLocalStorage("savedProducts");
  * Display all the products in the cartProducts array
  * @param { Array } cartProducts 
  */
-const displayCartProducts = async cartProducts => {
+const displayCartProducts = cartProducts => {
     cartProducts.map( async item => {
         // Url of the specific product
         const urlProduct = urlProducts + `/${item.id}`;
@@ -20,11 +20,28 @@ const displayCartProducts = async cartProducts => {
             const itemQty = item.colors[color];
             createArticle(data, color, itemQty);
         }
-        
-    })
+        modifyProduct(data);
+    });
+}
+displayCartProducts(cart);
+const modifyProduct = () => {
+    for (const element of document.querySelectorAll(".itemQuantity")) {
+        element.addEventListener("change", event => {
+            const product = element.closest(".cart__item");                
+            const result = cart.map(item => {
+                for (let color of Object.keys(item.colors)) {
+                    if (item.id === product.dataset.id && product.dataset.color === color) {
+                        item.colors = {...item.colors, [color]: Number(event.target.value)}
+                    }
+                }
+                return item;
+            });
+            localStorage.setItem("savedProducts", JSON.stringify(result));
+            computeTotals();  
+        })
+    }
 }
 
-displayCartProducts(cart);
 // Helper function
 /**
  * Create an article element with all the details
@@ -57,7 +74,6 @@ const createArticle = (data, color, qty) => {
                             </div>
                         </div>`
     insertElement(article, "#cart__items");
-    
     // Loop through the delete button to add a listener, try to remove the duplication with input
     // for (const element of document.querySelectorAll(".deleteItem")) {
     //         element.addEventListener("click", () => {
@@ -77,43 +93,26 @@ const createArticle = (data, color, qty) => {
     //         })
     // }
     // Loop througn the input to add event listener, try to remove the duplication with delete
-    // for (const element of document.querySelectorAll(".itemQuantity")) {
-    //     element.addEventListener("change", event => {
-    //         const product = element.closest(".cart__item");                
-    //         const result = cart.map(item => {
-    //             const colorList = Object.keys(Object.values(item)[0]);
-    //             for (let color of colorList) {
-    //                 if (Object.keys(item)[0] === product.dataset.id && product.dataset.color === color) {
-    //                     item[product.dataset.id][color] = Number(event.target.value);
-    //                     computeTotals();
-
-    //                 }
-    //             }
-    //             return item;
-    //         });
-    //         localStorage.setItem("savedProducts", JSON.stringify(result));
-    //     })
-    // }
 }
 
 
-// const computeTotals = () => {
-//     let totalPrice = 0;
-//     let totalQuantity = 0;
-//     const cart = getLocalStorage("savedProducts");
-//     cart.map(async item => {
-//         const urlProduct = urlProducts + `/${Object.keys(item)[0]}`;
-//         const data = await fetchData(urlProduct);
-//         const colorList = Object.keys(Object.values(item)[0]);
-//         for (let color of colorList) {
-//             const itemQty = Object.values(item)[0][color];
-//             totalPrice += itemQty * data.price;
-//             totalQuantity += itemQty;
-//             document.getElementById("totalPrice").innerText = totalPrice;
-//             document.getElementById("totalQuantity").innerText = totalQuantity;
-//         }
-//     })
-    
-    
-// }
-// computeTotals();
+
+const computeTotals = () => {
+    let totalPrice = 0;
+    let totalQuantity = 0;
+    const cart = getLocalStorage("savedProducts");
+    cart.map(async item => {
+        const urlProduct = urlProducts + `/${item.id}`;
+        const data = await fetchData(urlProduct);
+        for (let color of Object.keys(item.colors)) {
+            const itemQty = item.colors[color];
+            console.log(data._id);
+            console.log(itemQty, data.price);
+            totalPrice += itemQty * data.price;
+            totalQuantity += itemQty;
+        }
+        document.getElementById("totalPrice").innerText = totalPrice;
+        document.getElementById("totalQuantity").innerText = totalQuantity;
+    })
+}
+computeTotals();
