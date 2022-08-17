@@ -19,7 +19,26 @@ export const fetchData = async url => {
     }
 }
 
-
+export const postData = async (url, data) => {
+    try {
+            const response = await fetch(url, {
+            method: "POST",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "same-origin",
+            redirect: "follow",
+            referrerPolicy: "no-referrer",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json; charset=utf-8"
+            },
+            body: JSON.stringify(data)
+            });
+            return response.json();
+    } catch(error) {
+        console.log(error);
+    }
+}
 /**
  * Get the data in the local storage of a specific id
  * @param { String } id 

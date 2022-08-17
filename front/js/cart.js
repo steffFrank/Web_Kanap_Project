@@ -1,7 +1,7 @@
 // Functions to manage the cart
 
 // Import all the needed functions
-import { getLocalStorage, fetchData, urlProducts, insertElement, validateField } from "./helper_functions.js";
+import { getLocalStorage, fetchData, urlProducts, insertElement, validateField, postData } from "./helper_functions.js";
 
 // Get the data from localStorage
 const cart = getLocalStorage("savedProducts");
@@ -149,6 +149,7 @@ const order = document.getElementById("order");
 order.addEventListener("click", () => {
     let contact = {};
     let productsId = [];
+    let result;
     const firstName = validateField("firstName");
     const lastName = validateField("lastName");
     const address = validateField("address");
@@ -158,6 +159,11 @@ order.addEventListener("click", () => {
         contact = {firstName, lastName, address, city, email};
         cart.map(item => {
             productsId.push(item.id);
+        const data = {contact: contact, products: productsId}
+        const orderUrl = urlProducts + `/order`;
+        result = postData(orderUrl, data);
+        result.then(res => document.location.href =`./confirmation.html?orderId=${res.orderId}`);
+        
         })
     } else {
         console.log("One or more field are not correct");
