@@ -16,6 +16,8 @@ const qty = document.getElementById("quantity");
 const cartButton = document.getElementById("addToCart");
 const divButton = document.querySelector(".item__content__addButton");
 
+// Change the initial value of the quantity input to 1
+qty.value = 1;
 // Url to fetch the product
 const urlProduct = urlProducts + `/${id}`;
 
@@ -56,7 +58,6 @@ const insertOptions = (parent, list) => {
 
 // Add an event listener on the button
 cartButton.addEventListener("click", () => {
-    // const product = {};
     // Display an error message if the quantity is not between 0 and 100
     const textColor = "#770e0e";
     if (qty.value <= 0 || qty.value > 100 || colors.value == "") {
@@ -72,7 +73,6 @@ cartButton.addEventListener("click", () => {
     }
     removeElement(".message");
     localStorage.setItem("savedProducts", JSON.stringify(cart));
-    qty.value = 1;
     colors.value = "";
 })
 
