@@ -163,7 +163,6 @@ order.addEventListener("click", () => {
         const orderUrl = urlProducts + `/order`;
         result = postData(orderUrl, data);
         result.then(res => document.location.href =`./confirmation.html?orderId=${res.orderId}`);
-        
         })
     } else {
         console.log("One or more field are not correct");
