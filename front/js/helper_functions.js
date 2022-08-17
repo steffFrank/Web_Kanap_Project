@@ -18,7 +18,12 @@ export const fetchData = async url => {
         console.log(error);
     }
 }
-
+/**
+ * Post the data to the server
+ * @param { String } url 
+ * @param { Object } data 
+ * @returns Promise that resolves an Object 
+ */
 export const postData = async (url, data) => {
     try {
             const response = await fetch(url, {
@@ -145,7 +150,11 @@ export const removeElement = (element) => {
 
 
 //================================= Form Validation ============================
-
+/**
+ * Display the error message of the input
+ * @param { String } message 
+ * @param { String } id id of the element 
+ */
 const DisplayErrorMessage = (message, id) => {
     const element = document.getElementById(id);
     element.innerText = message;
@@ -154,6 +163,12 @@ const DisplayErrorMessage = (message, id) => {
     }, 2000);
 }
 
+/**
+ * Validate an input
+ * @param { String } field input to validate
+ * @param { String } displayId id of the element where to display
+ * @returns the value of the validated input
+ */
 const validateName = (field, displayId) => {
     let message = "";
     const name = document.getElementById(field);
@@ -171,6 +186,12 @@ const validateName = (field, displayId) => {
     return;
 }
 
+/**
+ * Validate an input
+ * @param { String } field input to validate
+ * @param { String } displayId id of the element where to display
+ * @returns the value of the validated input
+ */
 const validateAddress = (field, displayId) => {
     let message = "";
     const regex = new RegExp("^[1-9]?[\\d]?[\\d]?[\\d]{1} \\w.+ \\d{5}");
@@ -184,6 +205,12 @@ const validateAddress = (field, displayId) => {
     }
 }
 
+/**
+ * Validate an input
+ * @param { String } field input to validate
+ * @param { String } displayId id of the element where to display
+ * @returns the value of the validated input
+ */
 const validateCity = (field, displayId) => {
     let message = "";
     const regex = new RegExp("[\\d]");
@@ -197,6 +224,12 @@ const validateCity = (field, displayId) => {
     }
 }
 
+/**
+ * Validate an input
+ * @param { String } field input to validate
+ * @param { String } displayId id of the element where to display
+ * @returns the value of the validated input
+ */
 const validateEmail = (field, displayId) => {
     let message = "";
     const regex = new RegExp("\\w+[.\\-_]?\\w+@\\w+\\.\\w?\\w{2}");
@@ -210,6 +243,11 @@ const validateEmail = (field, displayId) => {
     }
 }
 
+/**
+ * Validate a field
+ * @param { String} field 
+ * @returns the input value validated
+ */
 export const validateField = (field) => {
     switch (field) {
         case "firstName":
