@@ -14,6 +14,7 @@ const colors = document.getElementById("colors");
 const img = document.createElement("img");
 const qty = document.getElementById("quantity");
 const cartButton = document.getElementById("addToCart");
+const divButton = document.querySelector(".item__content__addButton");
 
 // Url to fetch the product
 const urlProduct = urlProducts + `/${id}`;
@@ -57,7 +58,7 @@ const insertOptions = (parent, list) => {
 cartButton.addEventListener("click", () => {
     // const product = {};
     // Display an error message if the quantity is not between 0 and 100
-    const textColor = "#ef4545";
+    const textColor = "#770e0e";
     if (qty.value <= 0 || qty.value > 100 || colors.value == "") {
         if (qty.value <= 0 || qty.value > 100) {
             showMessage("Insérez un numero entre 1 et 100!",textColor, qty);
@@ -67,6 +68,7 @@ cartButton.addEventListener("click", () => {
         }
     } else {
         addToCart(id);
+        showMessage("Produit ajouté au panier", "#15f296", divButton);
     }
     removeElement(".message");
     localStorage.setItem("savedProducts", JSON.stringify(cart));
@@ -74,7 +76,11 @@ cartButton.addEventListener("click", () => {
     colors.value = "";
 })
 
-
+/**
+ * Adds products to the cart
+ * @param { String } id 
+ * @returns void
+ */
 const addToCart = id => {
     for (let item of cart) {
         if (item.id === id) {

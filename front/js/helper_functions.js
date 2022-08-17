@@ -71,7 +71,7 @@ export const createMessage = (message, color) => {
     par.innerText = `${message}`;
     par.style.color = `${color}`;
     par.style.fontSize = "12px";
-    par.style.margin = "5px auto";
+    par.style.margin = "10px auto";
     par.style.width = "fit-content";
     par.style.padding = "0 10px";
     par.style.textAlign = "center";
