@@ -146,10 +146,10 @@ const validateName = (field, displayId) => {
     } else if (name.value.split(" ").length >= 3) {
         message = "Juste deux noms sont permis";
     } else {
-        return true;
+        return name.value;
     }
     DisplayErrorMessage(message, displayId);
-    return false;
+    return;
 }
 
 const validateAddress = (field, displayId) => {
@@ -159,9 +159,9 @@ const validateAddress = (field, displayId) => {
     if (!regex.test(address.value)) {
         message = "Format non valide. Example: 17 rue de la vallee 90212";
         DisplayErrorMessage(message, displayId);
-        return false;
+        return;
     } else {
-        return true;
+        return address.value;
     }
 }
 
@@ -169,26 +169,25 @@ const validateCity = (field, displayId) => {
     let message = "";
     const regex = new RegExp("[\\d]");
     const city = document.getElementById(field);
-    if (!regex.test(city.value)) {
+    if (regex.test(city.value)) {
         message = "Auncun nombre n'est admis";
         DisplayErrorMessage(message, displayId);
-        return false;
+        return;
     } else {
-        return true;
+        return city.value;
     }
 }
 
 const validateEmail = (field, displayId) => {
     let message = "";
     const regex = new RegExp("\\w+[.\\-_]?\\w+@\\w+\\.\\w?\\w{2}");
-    console.log(regex);
     const email = document.getElementById(field);
     if (!regex.test(email.value)) {
         message = "Entrez un email valide. Example jacopo@yahoo.fr";
         DisplayErrorMessage(message, displayId);
-        return false;
+        return;
     } else {
-        return true;
+        return email.value;
     }
 }
 
@@ -205,6 +204,6 @@ export const validateField = (field) => {
         case "email":
             return validateEmail(field, "emailErrorMsg");
         default:
-            return true;
+            return;
     }
 }

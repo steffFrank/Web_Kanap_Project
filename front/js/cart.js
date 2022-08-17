@@ -144,13 +144,23 @@ computeTotals();
 
 
 
-//=================================== Contact =================================
+//================================= Contact Form ==============================
 const order = document.getElementById("order");
 order.addEventListener("click", () => {
-    validateField("firstName");
-    validateField("lastName");
-    validateField("address");
-    validateField("city");
-    validateField("email");
+    let contact = {};
+    let productsId = [];
+    const firstName = validateField("firstName");
+    const lastName = validateField("lastName");
+    const address = validateField("address");
+    const city = validateField("city");
+    const email = validateField("email");
+    if (firstName && lastName && address && city && email && cart.length !== 0) {
+        contact = {firstName, lastName, address, city, email};
+        cart.map(item => {
+            productsId.push(item.id);
+        })
+    } else {
+        console.log("One or more field are not correct");
+    }
 })
 
