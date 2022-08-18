@@ -145,7 +145,6 @@ const computeTotals = () => {
         }
         displayTotals(totalPrice, totalQuantity);
     });
-    displayTotals(totalPrice, totalQuantity);
 }
 computeTotals();
 
