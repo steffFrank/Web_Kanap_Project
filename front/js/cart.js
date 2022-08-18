@@ -171,6 +171,8 @@ order.addEventListener("click", () => {
             const orderUrl = urlProducts + `/order`;
             // Get the result of the order Id order 
             result = postData(orderUrl, data);
+            // Empty the cart to prepare for another order
+            localStorage.removeItem("savedProducts");
             // Redirect to the confirmation page with orderId number
             result.then(res => document.location.href = `./confirmation.html?orderId=${res.orderId}`);
         })
