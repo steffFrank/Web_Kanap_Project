@@ -105,12 +105,11 @@ export const createMessage = (message, color) => {
     par.className = "message";
     par.innerText = `${message}`;
     par.style.color = `${color}`;
-    par.style.fontSize = "12px";
+    par.style.fontSize = "15px";
     par.style.margin = "10px auto";
     par.style.width = "fit-content";
     par.style.padding = "0 10px";
     par.style.textAlign = "center";
-    par.style.justifySelf = "flex-end";
     return par;
 }
 
