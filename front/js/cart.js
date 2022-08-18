@@ -19,38 +19,42 @@ const displayCartProducts = cartProducts => {
         for (let color of Object.keys(item.colors)) {
             const itemQty = item.colors[color];
             createArticle(data, color, itemQty);
+            modifyProductQuantity(item, color);
+
         }
-        modifyProductQuantity();
-        deleteArticle();
+        // deleteArticle();
     });
 }
 displayCartProducts(cart);
-
 /**
- * Modify the quantity of the input
+ * Modify dinamically the quantities in the cart
+ * @param { Object } item 
+ * @param { String } color 
  */
-const modifyProductQuantity = () => {
+const modifyProductQuantity = (item, color) => {
+    // Loop through the each input element
     for (const element of document.querySelectorAll(".itemQuantity")) {
-        element.addEventListener("change", event => {
-            const actualValue = Number(event.target.value);
-        
-            const product = element.closest(".cart__item");
-            const result = cart.map(item => {
-                for (let color of Object.keys(item.colors)) {
-                    if (item.id === product.dataset.id && product.dataset.color === color) {
-                        if (actualValue <= 0 || actualValue > 100) {
-                            showMessage("Insérez un numero entre 1 et 100!", "#fbbcbc", product);
-                            removeElement(".message");
-                        } else {
-                            item.colors = { ...item.colors, [color]: actualValue }
-                        }
-                    }
-                }
-                return item;
-            });
-            localStorage.setItem("savedProducts", JSON.stringify(result));
-            computeTotals();
-        })
+        const product = element.closest(".cart__item");
+
+        // Add an event listener to the correct element
+        if (product.dataset.id === item.id && product.dataset.color === color) {
+            element.addEventListener("change", event => {
+                const actualNumber = Number(event.target.value);
+                event.preventDefault();
+                // Validate the input
+                if (actualNumber < 1 || actualNumber > 100) {
+                    showMessage("Entrer une valeur entre 1 et 100","#fbbcbc", product);
+                    removeElement(".message");
+                } else {
+                    // Modify the input if it is correct
+                    item.colors = {...item.colors, [color]: Number(event.target.value)}
+                    // Modify the total displayed
+                    computeTotals();
+                    // Save the new values in the local storage
+                    localStorage.setItem("savedProducts", JSON.stringify(cart));
+                } 
+            })
+        }   
     }
 }
 
@@ -83,7 +87,7 @@ const deleteArticle = () => {
         });
     }
 }
-// Helper function
+// Helper functions
 /**
  * Create an article element with all the details
  * @param { Object } data data fetched from the id 
@@ -132,8 +136,6 @@ const computeTotals = () => {
     // Declare and initialize each total
     let totalPrice = 0;
     let totalQuantity = 0;
-    // Get the actual items in the cart
-    const cart = getLocalStorage("savedProducts");
     // Loop through each item of the cart and sum up the quantities and prices
     cart.map(async item => {
         const urlProduct = urlProducts + `/${item.id}`;
@@ -145,7 +147,6 @@ const computeTotals = () => {
         }
         displayTotals(totalPrice, totalQuantity);
     });
-    displayTotals(totalPrice, totalQuantity);
 }
 computeTotals();
 
