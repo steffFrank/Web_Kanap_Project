@@ -33,13 +33,13 @@ const modifyProductQuantity = () => {
     for (const element of document.querySelectorAll(".itemQuantity")) {
         element.addEventListener("change", event => {
             const actualValue = Number(event.target.value);
-            
+        
             const product = element.closest(".cart__item");
             const result = cart.map(item => {
                 for (let color of Object.keys(item.colors)) {
                     if (item.id === product.dataset.id && product.dataset.color === color) {
                         if (actualValue <= 0 || actualValue > 100) {
-                            showMessage("Insérez un numero entre 1 et 100!", "#fbbcbc", element);
+                            showMessage("Insérez un numero entre 1 et 100!", "#fbbcbc", product);
                             removeElement(".message");
                         } else {
                             item.colors = { ...item.colors, [color]: actualValue }
@@ -171,10 +171,10 @@ order.addEventListener("click", () => {
             const orderUrl = urlProducts + `/order`;
             // Get the result of the order Id order 
             result = postData(orderUrl, data);
-            // Empty the cart to prepare for another order
-            localStorage.removeItem("savedProducts");
+            
             // Redirect to the confirmation page with orderId number
             result.then(res => document.location.href = `./confirmation.html?orderId=${res.orderId}`);
+
         })
     } else {
         console.log("One or more field are not correct");
