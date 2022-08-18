@@ -21,7 +21,7 @@ const displayCartProducts = cartProducts => {
             createArticle(data, color, itemQty);
         }
         modifyProductQuantity();
-        deleteArticle(item);
+        deleteArticle();
     });
 }
 displayCartProducts(cart);
