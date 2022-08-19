@@ -17,7 +17,7 @@ export const fetchData = async url => {
             return data;
         }
         // throw new Error("Request failed!");
-        
+
     } catch (error) {
         console.log(error);
     }

@@ -123,7 +123,7 @@ const deleteArticle = () => {
 /**
  * Place the order and redirect to the confirmation page
  */
-const placeOrder = () => {
+const placeOrder =  () => {
     const order = document.getElementById("order");
 
     // Add a click event on the order button
@@ -141,27 +141,23 @@ const placeOrder = () => {
         // Check if everything is correct 
         if (firstName && lastName && address && city && email && cart.length !== 0) {
             contact = { firstName, lastName, address, city, email };
-            cart.map(item => {
+            cart.map(async item => {
                 productsId.push(item.id);
                 const data = { contact: contact, products: productsId }
                 const orderUrl = urlProducts + `/order`;
                 // Get the result of the order Id order 
-                const result = postData(orderUrl, data);
-
+                const result = await postData(orderUrl, data);
                 // Redirect to the confirmation page with orderId number
-                result.then(res => document.location.href = `./confirmation.html?orderId=${res.orderId}`);
-
-            })
-        } else {
+                window.location.replace(`./confirmation.html?orderId=${result.orderId}`);
+        })} else {
             console.log("One or more field are not correct");
         }
     })
 }
 
 placeOrder();
-
-
 //================================== Helper functions ==========================
+
 
 /**
  * Display the totals
