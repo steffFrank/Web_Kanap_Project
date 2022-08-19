@@ -1,5 +1,5 @@
 // Functions to display the details of the product page
-import { fetchData, insertElement, removeElement, showMessage, getLocalStorage, urlProducts } from "./helper_functions.js";
+import { fetchData, insertElement, showMessage, getLocalStorage, urlProducts } from "./helper_functions.js";
 
 const cart = getLocalStorage("savedProducts");
 
@@ -8,12 +8,12 @@ const price = document.getElementById("price");
 const description = document.getElementById("description");
 const colors = document.getElementById("colors");
 const img = document.createElement("img");
-const qty = document.getElementById("quantity");
+const productQty = document.getElementById("quantity");
 const cartButton = document.getElementById("addToCart");
 const divButton = document.querySelector(".item__content__addButton");
 
 // Change the initial value of the quantity input to 1
-qty.value = 1;
+productQty.value = 1;
 
 // Get the Url to fetch the product
 const productURL = new URL(window.location.href); // Get the url of the page
@@ -59,9 +59,9 @@ const insertOptions = (parent, list) => {
 cartButton.addEventListener("click", () => {
     // Display an error message if the quantity is not between 0 and 100
     const textColor = "#fbbcbc";
-    if (qty.value <= 0 || qty.value > 100 || colors.value == "") {
-        if (qty.value <= 0 || qty.value > 100) {
-            showMessage("Insérez un numero entre 1 et 100!", textColor, qty);
+    if (productQty.value <= 0 || productQty.value > 100 || colors.value == "") {
+        if (productQty.value <= 0 || productQty.value > 100) {
+            showMessage("Insérez un numero entre 1 et 100!", textColor, productQty);
         }
         if (colors.value == "") {
             showMessage("Sélectionnez une couleur!", textColor, colors);
@@ -75,24 +75,21 @@ cartButton.addEventListener("click", () => {
 })
 
 /**
- * Adds products to the cart
- * @param { String } id 
+ * Add product to the cart
+ * @param { String } id of the product
  * @returns void
  */
 const addToCart = id => {
     for (let item of cart) {
         if (item.id === id) {
-            for (let color of Object.keys(item.colors)) {
-                if (color === colors.value) {
-                    item.colors[color] += Number(qty.value);
-                    return;
-                } else {
-                    item.colors = { ...item.colors, [colors.value]: Number(qty.value) };
-                    return;
-                }
-            }
+			if (Object.keys(item.colors).includes(colors.value)) {
+				item.colors[colors.value] += Number(productQty.value);
+			} else {
+				item.colors[colors.value] = Number(productQty.value);
+			}
+            return;
         }
-    }
-    cart.push({ id: id, colors: { [colors.value]: Number(qty.value) } });
+    }	
+    // If the id is not in the cart we add it with the color and quantity values
+    cart.push({ id: id, colors: { [colors.value]: Number(productQty.value) } });
 }
-
