@@ -12,8 +12,12 @@ export const urlProducts = "http://localhost:3000/api/products";
 export const fetchData = async url => {
     try {
         const response = await fetch(url);
-        const data = await response.json();
-        return data;
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        }
+        // throw new Error("Request failed!");
+        
     } catch (error) {
         console.log(error);
     }
@@ -39,7 +43,10 @@ export const postData = async (url, data) => {
             },
             body: JSON.stringify(data)
         });
-        return response.json();
+        if (response.ok) {
+            return response.json();
+        }
+        throw new Error("Request Failed!");
     } catch (error) {
         console.log(error);
     }
