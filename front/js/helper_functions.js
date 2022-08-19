@@ -56,11 +56,18 @@ export const postData = async (url, data) => {
  * @param { String } id 
  * @returns Array
  */
-export const getLocalStorage = (id) => {
+export const getLocalStorage = id => {
     return JSON.parse(localStorage.getItem(id)) || [];
 }
 
-
+/**
+ * Save the storage in the local storage with the id
+ * @param {String} id 
+ * @param {Array} storage 
+ */
+export const saveToLocalStorage = (id, storage) => {
+    localStorage.setItem(id, JSON.stringify(storage));
+}
 //================================= Display ====================================
 /**
  * Displays the data fetched from url

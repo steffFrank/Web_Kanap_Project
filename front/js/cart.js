@@ -1,5 +1,5 @@
 // Import all the needed functions and variables
-import { getLocalStorage, fetchData, urlProducts, insertElement, validateField, postData, showMessage, removeElement } from "./helper_functions.js";
+import { getLocalStorage, fetchData, urlProducts, insertElement, validateField, postData, showMessage, saveToLocalStorage } from "./helper_functions.js";
 
 // Get the data from localStorage
 const cart = getLocalStorage("savedProducts");
@@ -74,14 +74,13 @@ const modifyProductQuantity = (item, color) => {
                 // Validate the input
                 if (actualNumber < 1 || actualNumber > 100) {
                     showMessage("Entrer une valeur entre 1 et 100", "#fbbcbc", product);
-                    removeElement(".message");
                 } else {
                     // Modify the input if it is correct
                     item.colors = { ...item.colors, [color]: Number(event.target.value) }
                     // Modify the total displayed
                     computeTotals();
                     // Save the new values in the local storage
-                    localStorage.setItem("savedProducts", JSON.stringify(cart));
+                    saveToLocalStorage("savedProducts", cart);
                 }
             })
         }
@@ -111,7 +110,7 @@ const deleteArticle = () => {
                 // Remove  all items with empty colors list
             })).filter(item => Object.keys(item.colors).length !== 0)
             // Save the new products
-            localStorage.setItem("savedProducts", JSON.stringify(newCart));
+            saveToLocalStorage("savedProducts", newCart);
             // Compute the new totals
             computeTotals();
         });
