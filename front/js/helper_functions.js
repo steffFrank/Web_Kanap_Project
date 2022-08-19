@@ -193,6 +193,8 @@ const validateName = (field, displayId) => {
         message = "Juste 18 caracteres permis";
     } else if (name.value.split(" ").length >= 3) {
         message = "Juste deux noms sont permis";
+    } else if (!name.value) {
+        message = "Veuillez entrer une valeur"
     } else {
         return name.value;
     }
@@ -233,7 +235,10 @@ const validateCity = (field, displayId) => {
         message = "Auncun nombre n'est admis";
         DisplayErrorMessage(message, displayId);
         return;
-    } else {
+    } else if (!city.value) {
+        message = "Veuillez entrer le nom de votre ville";
+        DisplayErrorMessage(message, displayId);
+    }else {
         return city.value;
     }
 }
