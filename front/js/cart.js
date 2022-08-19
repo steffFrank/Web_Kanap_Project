@@ -5,39 +5,6 @@ import { getLocalStorage, fetchData, urlProducts, insertElement, validateField, 
 const cart = getLocalStorage("savedProducts");
 
 /**
- * Create an article element of the product with all its details
- * @param { Object } data data fetched from the id 
- * @param { String } color color of the actual product 
- * @param { Number } qty Qty of the actual product 
- */
-const createArticle = (data, color, qty) => {
-    const article = document.createElement("article");
-    article.className = "cart__item";
-    article.setAttribute("data-id", data._id);
-    article.setAttribute("data-color", color);
-    article.innerHTML = `<div class="cart__item__img">
-                            <img src="${data.imageUrl}" alt="${data.altTxt}">
-                        </div>
-                        <div class="cart__item__content">
-                            <div class="cart__item__content__description">
-                                <h2>${data.name}</h2>
-                                <p>${color}</p>
-                                <p>${data.price}</p>
-                            </div>
-                            <div class="cart__item__content__settings">
-                                <div class="cart__item__content__settings__quantity">   <p>Qté : </p>
-                                   <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${qty}">
-                                </div>
-                                <div class="cart__item__content__settings__delete">
-                                    <p class="deleteItem">Supprimer</p>
-                                </div>
-                            </div>
-                        </div>`
-    insertElement(article, "#cart__items");
-}
-
-
-/**
  * Display all the products in the saved in the local storage array
  * @param { Array } cartProducts 
  */
@@ -56,12 +23,24 @@ const displayCartProducts = cartProducts => {
 }
 displayCartProducts(cart);
 
+
+//================================= Contact Form ==============================
+
+// Get the button element to add the event listener to
+const order = document.getElementById("order");
+// Place the order after clicking the button
+order.addEventListener("click", () => placeOrder());
+
+
+
+//================================== Helper functions ==========================
+
 /**
  * Modify dinamically the quantities in the cart
  * @param { Object } item 
  * @param { String } color 
  */
-const modifyProductQuantity = (item, color) => {
+ const modifyProductQuantity = (item, color) => {
     // Loop through the each input element
     for (const element of document.querySelectorAll(".itemQuantity")) {
         const product = element.closest(".cart__item");
@@ -119,45 +98,6 @@ const deleteArticle = () => {
 
 
 
-//================================= Contact Form ==============================
-/**
- * Place the order and redirect to the confirmation page
- */
-const placeOrder =  () => {
-    const order = document.getElementById("order");
-
-    // Add a click event on the order button
-    order.addEventListener("click", () => {
-        let contact = {}; // To save the data of the form
-        let productsId = []; // To save the ids of the product in cart
-
-        // Form field validation
-        const firstName = validateField("firstName");
-        const lastName = validateField("lastName");
-        const address = validateField("address");
-        const city = validateField("city");
-        const email = validateField("email");
-
-        // Check if everything is correct 
-        if (firstName && lastName && address && city && email && cart.length !== 0) {
-            contact = { firstName, lastName, address, city, email };
-            cart.map(async item => {
-                productsId.push(item.id);
-                const data = { contact: contact, products: productsId }
-                const orderUrl = urlProducts + `/order`;
-                // Get the result of the order Id order 
-                const result = await postData(orderUrl, data);
-                // Redirect to the confirmation page with orderId number
-                window.location.replace(`./confirmation.html?orderId=${result.orderId}`);
-        })} else {
-            console.log("One or more field are not correct");
-        }
-    })
-}
-
-placeOrder();
-//================================== Helper functions ==========================
-
 
 /**
  * Display the totals
@@ -189,3 +129,70 @@ const computeTotals = () => {
     });
 }
 computeTotals();
+
+
+/**
+ * Place the order and redirect to the confirmation page
+ */
+ const placeOrder = () => {
+    let contact = {}; // To save the data of the form
+    let productsId = []; // To save the ids of the product in cart
+
+    // Form field validation
+    const firstName = validateField("firstName");
+    const lastName = validateField("lastName");
+    const address = validateField("address");
+    const city = validateField("city");
+    const email = validateField("email");
+
+    // Check if everything is correct 
+    if (firstName && lastName && address && city && email && cart.length !== 0) {
+        contact = { firstName, lastName, address, city, email };
+        cart.map(async item => {
+            productsId.push(item.id);
+            const data = { contact: contact, products: productsId }
+            const orderUrl = urlProducts + `/order`;
+            // Get the result of the order Id order 
+            const result = await postData(orderUrl, data);
+            // Redirect to the confirmation page with orderId number
+            window.location.replace(`./confirmation.html?orderId=${result.orderId}`);
+    })} else {
+        console.log("One or more field are not correct");
+    }
+}
+
+
+/**
+ * Create an article element of the product with all its details
+ * @param { Object } data data fetched from the id 
+ * @param { String } color color of the actual product 
+ * @param { Number } qty Qty of the actual product 
+ */
+
+
+const createArticle = (data, color, qty) => {
+    const article = document.createElement("article");
+    article.className = "cart__item";
+    article.setAttribute("data-id", data._id);
+    article.setAttribute("data-color", color);
+    article.innerHTML = `<div class="cart__item__img">
+                            <img src="${data.imageUrl}" alt="${data.altTxt}">
+                        </div>
+                        <div class="cart__item__content">
+                            <div class="cart__item__content__description">
+                                <h2>${data.name}</h2>
+                                <p>${color}</p>
+                                <p>${data.price}</p>
+                            </div>
+                            <div class="cart__item__content__settings">
+                                <div class="cart__item__content__settings__quantity">   <p>Qté : </p>
+                                   <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${qty}">
+                                </div>
+                                <div class="cart__item__content__settings__delete">
+                                    <p class="deleteItem">Supprimer</p>
+                                </div>
+                            </div>
+                        </div>`
+    insertElement(article, "#cart__items");
+}
+
