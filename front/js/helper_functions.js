@@ -80,6 +80,7 @@ export const displayData = async url => {
  */
 export const showMessage = (message, color, sibling) => {
     insertAfter(createMessage(message, color), sibling);
+    removeElement(".message");
 }
 
 //================================== Create Element ============================

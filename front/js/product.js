@@ -2,9 +2,7 @@
 import { fetchData, insertElement, removeElement, showMessage, getLocalStorage, urlProducts } from "./helper_functions.js";
 
 const cart = getLocalStorage("savedProducts");
-// Get the product id 
-const productURL = new URL(window.location.href); // Get the url of the page
-const id = productURL.searchParams.get("id");     // Get the id from the url
+
 const productName = document.getElementById("title");
 const price = document.getElementById("price");
 const description = document.getElementById("description");
@@ -16,7 +14,10 @@ const divButton = document.querySelector(".item__content__addButton");
 
 // Change the initial value of the quantity input to 1
 qty.value = 1;
-// Url to fetch the product
+
+// Get the Url to fetch the product
+const productURL = new URL(window.location.href); // Get the url of the page
+const id = productURL.searchParams.get("id");     // Get the id from the url
 const urlProduct = urlProducts + `/${id}`;
 
 /**
@@ -69,9 +70,8 @@ cartButton.addEventListener("click", () => {
         addToCart(id);
         showMessage("Produit ajouté au panier", "#15f296", divButton);
     }
-    removeElement(".message");
     localStorage.setItem("savedProducts", JSON.stringify(cart));
-    colors.value = "";
+    colors.value = ""; // Reset the colors value
 })
 
 /**
