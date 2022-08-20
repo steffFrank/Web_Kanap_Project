@@ -29,7 +29,10 @@ displayCartProducts(cart);
 // Get the button element to add the event listener to
 const order = document.getElementById("order");
 // Place the order after clicking the button
-order.addEventListener("click", () => placeOrder());
+order.addEventListener("click", (event) => {
+    event.preventDefault();
+    placeOrder()
+});
 
 
 
@@ -127,6 +130,8 @@ const computeTotals = () => {
         }
         displayTotals(totalPrice, totalQuantity);
     });
+    // Show zeros if the cart is empty
+    displayTotals(totalPrice, totalQuantity);
 }
 computeTotals();
 
@@ -134,7 +139,7 @@ computeTotals();
 /**
  * Place the order and redirect to the confirmation page
  */
- const placeOrder = () => {
+ const placeOrder = async () => {
     let contact = {}; // To save the data of the form
     let productsId = []; // To save the ids of the product in cart
 
@@ -148,15 +153,17 @@ computeTotals();
     // Check if everything is correct 
     if (firstName && lastName && address && city && email && cart.length !== 0) {
         contact = { firstName, lastName, address, city, email };
-        cart.map(async item => {
+        cart.map(item => {
             productsId.push(item.id);
-            const data = { contact: contact, products: productsId }
-            const orderUrl = urlProducts + `/order`;
-            // Get the result of the order Id order 
-            const result = await postData(orderUrl, data);
-            // Redirect to the confirmation page with orderId number
-            window.location.replace(`./confirmation.html?orderId=${result.orderId}`);
-    })} else {
+        });
+
+        const data = { contact: contact, products: productsId }
+        const orderUrl = urlProducts + `/order`;
+        // Get the result of the order Id order 
+        const result = await postData(orderUrl, data);
+        // Redirect to the confirmation page with orderId number
+        window.location.replace(`./confirmation.html?orderId=${result.orderId}`);
+    } else {
         console.log("One or more field are not correct");
     }
 }
