@@ -81,18 +81,26 @@ const insertOptions = (parent, list) => {
  * @returns void
  */
 const addToCart = id => {
+	// Save the qty in the input
+	const inputQty = Number(productQty.value);
+	const inputColor = colors.value;
 	for (let item of cart) {
 		if (item.id === id) {
-			if (Object.keys(item.colors).includes(colors.value)) {
-				item.colors[colors.value] += Number(productQty.value);
-			} else {
-				item.colors[colors.value] = Number(productQty.value);
+			for (let model of item.models) {
+				if (model.color === inputColor) {
+					model.qty += inputQty;
+					return;
+				}
 			}
+			item.models.push({color: inputColor, qty: inputQty});
 			return;
 		}
 	}
 	// If the id is not in the cart we add it with the color and quantity values
-	cart.push({ id: id, colors: { [colors.value]: Number(productQty.value) } });
+	console.log("and here")
+	cart.push({ id: id, 
+				models: [{color: colors.value,
+						  qty: inputQty}]});
 }
 
 /**
