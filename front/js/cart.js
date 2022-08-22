@@ -31,7 +31,7 @@ const order = document.getElementById("order");
 // Place the order after clicking the button
 order.addEventListener("click", (event) => {
     event.preventDefault();
-    placeOrder()
+    placeOrder();
 });
 
 

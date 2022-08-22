@@ -87,7 +87,10 @@ export const displayData = async url => {
  */
 export const showMessage = (message, color, sibling) => {
     insertAfter(createMessage(message, color), sibling);
-    document.getElementById("addToCart").disabled = true;
+    const cartButton = document.getElementById("addToCart");
+    if (document.body.contains(cartButton)) {
+        document.getElementById("addToCart").disabled = true;
+    }
     removeElement(".message");
 }
 
@@ -160,7 +163,11 @@ export const removeElement = (element) => {
         for (let m of msg) {
             m.remove();
         }
-        document.getElementById("addToCart").disabled = false;
+        const cartButton = document.getElementById("addToCart");
+        if (document.body.contains(cartButton)) {
+            cartButton.disabled = false;
+        }
+        
     }, 2000);
 }
 
