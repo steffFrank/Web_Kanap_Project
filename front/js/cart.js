@@ -140,9 +140,13 @@ computeTotals();
  * Place the order and redirect to the confirmation page
  */
  const placeOrder = async () => {
+    // Show an error message if the cart is empty 
+    if (isEmptyCart()) {
+        return;
+    }
     let contact = {}; // To save the data of the form
     let productsId = []; // To save the ids of the product in cart
-
+    
     // Form field validation
     const firstName = validateField("firstName");
     const lastName = validateField("lastName");
@@ -203,3 +207,13 @@ const createArticle = (data, color, qty) => {
     insertElement(article, "#cart__items");
 }
 
+
+const isEmptyCart = () => {
+    if (cart.length === 0) {
+        const totalQty = document.querySelector(".cart__price");
+        showMessage("Le panier est vide! Veuillez choisir au moins un article", "#fbbcbc", totalQty);
+        return true;
+    } else {
+        return false;
+    }
+}
