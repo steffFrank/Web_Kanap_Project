@@ -13,10 +13,10 @@ const displayCartProducts = cartProducts => {
         // Url of the specific product
         const urlProduct = urlProducts + `/${item.id}`;
         const data = await fetchData(urlProduct);
-        for (let color of Object.keys(item.colors)) {
-            const itemQty = item.colors[color];
-            createArticle(data, color, itemQty);
-            modifyProductQuantity(item, color);
+        for (let model of item.models) {
+            // const itemQty = model.qty;
+            createArticle(data, model);
+            modifyProductQuantity(item, model);
         }
         deleteArticle();
     });
@@ -43,13 +43,13 @@ order.addEventListener("click", (event) => {
  * @param { Object } item 
  * @param { String } color 
  */
- const modifyProductQuantity = (item, color) => {
+ const modifyProductQuantity = (item, model) => {
     // Loop through the each input element
     for (const element of document.querySelectorAll(".itemQuantity")) {
         const product = element.closest(".cart__item");
 
         // Add an event listener to the correct element
-        if (product.dataset.id === item.id && product.dataset.color === color) {
+        if (product.dataset.id === item.id && product.dataset.color === model.color) {
             element.addEventListener("change", event => {
                 const actualNumber = Number(event.target.value);
                 event.preventDefault();
@@ -57,8 +57,7 @@ order.addEventListener("click", (event) => {
                 if (actualNumber < 1 || actualNumber > 100) {
                     showMessage("Entrer une valeur entre 1 et 100", "#fbbcbc", product);
                 } else {
-                    // Modify the input if it is correct
-                    item.colors = { ...item.colors, [color]: Number(event.target.value) }
+                    model.qty = actualNumber;
                     // Modify the total displayed
                     computeTotals();
                     // Save the new values in the local storage
@@ -80,17 +79,17 @@ const deleteArticle = () => {
             // Loop through the item of the cart to remove the specific product
             const newCart = (cart.map(item => {
                 if (item.id === product.dataset.id) {
-                    for (let color of Object.keys(item.colors)) {
-                        if (color === product.dataset.color) {
+                    for (let model of item.models) {
+                        if (model.color === product.dataset.color) {
                             product.remove();
                             // If there is a match remove the specific color product
-                            delete item.colors[color];
+                            item.models = removeItemFromList(item.models, model);
                         }
                     }
                 }
                 return item;
                 // Remove  all items with empty colors list
-            })).filter(item => Object.keys(item.colors).length !== 0)
+            })).filter(item => item.models.length !== 0)
             // Save the new products
             saveToLocalStorage("savedProducts", newCart);
             // Compute the new totals
@@ -123,16 +122,17 @@ const computeTotals = () => {
     cart.map(async item => {
         const urlProduct = urlProducts + `/${item.id}`;
         const data = await fetchData(urlProduct);
-        for (let color of Object.keys(item.colors)) {
-            const itemQty = item.colors[color];
-            totalPrice += itemQty * data.price;
-            totalQuantity += itemQty;
+        for (let model of item.models) {
+            
+            totalPrice += model.qty * data.price;
+            totalQuantity += model.qty;
         }
         displayTotals(totalPrice, totalQuantity);
     });
     // Show zeros if the cart is empty
     displayTotals(totalPrice, totalQuantity);
 }
+// When we enter the cart
 computeTotals();
 
 
@@ -176,28 +176,25 @@ computeTotals();
 /**
  * Create an article element of the product with all its details
  * @param { Object } data data fetched from the id 
- * @param { String } color color of the actual product 
- * @param { Number } qty Qty of the actual product 
+ * @param { Object } model Object of color and quantity values of the actual product 
  */
-
-
-const createArticle = (data, color, qty) => {
+const createArticle = (data, model) => {
     const article = document.createElement("article");
     article.className = "cart__item";
     article.setAttribute("data-id", data._id);
-    article.setAttribute("data-color", color);
+    article.setAttribute("data-color", model.color);
     article.innerHTML = `<div class="cart__item__img">
                             <img src="${data.imageUrl}" alt="${data.altTxt}">
                         </div>
                         <div class="cart__item__content">
                             <div class="cart__item__content__description">
                                 <h2>${data.name}</h2>
-                                <p>${color}</p>
+                                <p>${model.color}</p>
                                 <p>${data.price}</p>
                             </div>
                             <div class="cart__item__content__settings">
                                 <div class="cart__item__content__settings__quantity">   <p>Qté : </p>
-                                   <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${qty}">
+                                   <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${model.qty}">
                                 </div>
                                 <div class="cart__item__content__settings__delete">
                                     <p class="deleteItem">Supprimer</p>
@@ -209,6 +206,8 @@ const createArticle = (data, color, qty) => {
 
 
 const isEmptyCart = () => {
+    // Get the actual value of the cart
+    const cart = getLocalStorage("savedProducts");
     if (cart.length === 0) {
         const totalQty = document.querySelector(".cart__price");
         showMessage("Le panier est vide! Veuillez choisir au moins un article", "#fbbcbc", totalQty);
@@ -216,4 +215,8 @@ const isEmptyCart = () => {
     } else {
         return false;
     }
+}
+
+const removeItemFromList = (list, item) => {
+    return list.splice(0, list.indexOf(item)).concat(list.splice(list.indexOf(item) + 1));
 }
