@@ -87,17 +87,20 @@ const addToCart = id => {
 	for (let item of cart) {
 		if (item.id === id) {
 			for (let model of item.models) {
+				// For each object we add the qty if the color is matching
 				if (model.color === inputColor) {
 					model.qty += inputQty;
 					return;
 				}
 			}
+			// If there are no color matching we create a new model object
+			// with the input color
 			item.models.push({color: inputColor, qty: inputQty});
 			return;
 		}
 	}
-	// If the id is not in the cart we add it with the color and quantity values
-	console.log("and here")
+	// If the id is not in the cart or the cart is empty 
+	//we add it with the color and quantity values
 	cart.push({ id: id, 
 				models: [{color: colors.value,
 						  qty: inputQty}]});
