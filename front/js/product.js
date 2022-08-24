@@ -34,16 +34,15 @@ insertDetails(urlProduct);
 /**
  * Validate and add the product to the cart
  */
-const addProductToCart = () => {
-	if (validateInputs()) {
-		addToCart(id);
+const addProductToCart = (id) => {
+	if (validateInputs() && addToCart(id)) {
 		showMessage("Produit ajouté au panier", "#15f296", divButton);
 		saveToLocalStorage("savedProducts", cart);
 		resetInputs();
 	}
 }
 // Add the product to the cart after a click on the cart button
-cartButton.addEventListener("click", addProductToCart);
+cartButton.addEventListener("click", () => addProductToCart(id));
 
 
 // Helpers Functions
@@ -78,7 +77,7 @@ const insertOptions = (parent, list) => {
 /**
  * Add product to the cart
  * @param { String } id of the product
- * @returns void
+ * @returns Boolean
  */
 const addToCart = id => {
 	// Save the qty in the input
@@ -89,14 +88,19 @@ const addToCart = id => {
 			for (let model of item.models) {
 				// For each object we add the qty if the color is matching
 				if (model.color === inputColor) {
-					model.qty += inputQty;
-					return;
+					if (model.qty + inputQty > 100) {
+						showMessage(`La valeur saisie doit être inférieure ou égale ${100 - model.qty}`, "#fbbcbc", productQty);
+						return false;
+					} else {
+						model.qty += inputQty;
+						return true;
+					}
 				}
 			}
 			// If there are no color matching we create a new model object
 			// with the input color
 			item.models.push({color: inputColor, qty: inputQty});
-			return;
+			return true;
 		}
 	}
 	// If the id is not in the cart or the cart is empty 
@@ -104,6 +108,7 @@ const addToCart = id => {
 	cart.push({ id: id, 
 				models: [{color: colors.value,
 						  qty: inputQty}]});
+	return true;
 }
 
 /**
